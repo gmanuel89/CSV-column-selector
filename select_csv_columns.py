@@ -1,6 +1,6 @@
 ##### PARAMETERS
 # Input file
-input_csv_file = 'C:/Users/GalliM29530/Downloads/Export.csv'
+input_csv_file = 'C:/Users/GalliM29530/Downloads/Export of ChemAxon compounds from SNB Prod tenant.csv'
 # Output file
 output_csv_file = 'C:/Users/GalliM29530/Downloads/Conversion map.csv'
 # Columns to preserve
@@ -14,12 +14,14 @@ columns_to_preserve_headers = ['ART_Key', 'ID']
 ##### SCRIPT
 # Import libraries
 import csv
+# Initialise output variable
+output_csv_file_content = []
 # Open the CSV file
-with open(input_csv_file, 'r', encoding='utf-8') as input_file:
-    # Initialise output variable
-    output_csv_file_content = []
+with open(input_csv_file, 'r', encoding='utf-8', newline='',) as input_file:
     # Read content
-    csv_file_content = list(csv.reader(input_file))
+    csv_file_content = list(csv.reader(input_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL))
+    print("CSV row number: ", str(len(csv_file_content)))
+    print("CSV column number: ", str(len(csv_file_content[0])))
     # Extract header (and discard it from the content)
     csv_header = csv_file_content[0]
     csv_file_content.remove(csv_header)
@@ -41,11 +43,12 @@ with open(input_csv_file, 'r', encoding='utf-8') as input_file:
         output_csv_file_content.append(row_to_preserve)
 # Close the input file
 input_file.close()
-# Write the output file
-with open(output_csv_file, 'w', encoding='utf-8', newline='') as output_file:
-    csv_writer = csv.writer(output_file)
-    csv_writer.writerow(csv_header_columns_to_preserve)
-    for row in output_csv_file_content:
-        csv_writer.writerow(row)
+# Write the output file (if there is any content)
+if len(output_csv_file_content) > 0:
+    with open(output_csv_file, 'w', encoding='utf-8', newline='') as output_file:
+        csv_writer = csv.writer(output_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        csv_writer.writerow(csv_header_columns_to_preserve)
+        for row in output_csv_file_content:
+            csv_writer.writerow(row)
 # Close the output file
 output_file.close()
